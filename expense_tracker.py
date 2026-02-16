@@ -21,4 +21,29 @@ def add_expense():
 
 
 # Program starts here
-add_expense()
+# ---------- Day 2 Feature ----------
+def view_expenses():
+    print("\n--- All Expenses ---")
+
+    try:
+        with open("expenses.txt", "r") as file:
+            for line in file:
+                amount, category, note = line.strip().split(",")
+                print(f"Amount: {amount}, Category: {category}, Note: {note}")
+    except FileNotFoundError:
+        print("No expenses found.")
+
+
+# ---------- Main Menu ----------
+print("\nExpense Tracker")
+print("1. Add Expense")
+print("2. View Expenses")
+
+choice = input("Enter your choice: ")
+
+if choice == "1":
+    add_expense()
+elif choice == "2":
+    view_expenses()
+else:
+    print("Invalid choice")
