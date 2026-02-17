@@ -32,7 +32,16 @@ def view_expenses():
                 print(f"Amount: {amount}, Category: {category}, Note: {note}")
     except FileNotFoundError:
         print("No expenses found.")
-
+def total_expense():
+    total = 0.0
+    try:
+        with open("expenses.txt", "r") as file:
+            for line in file:
+                amount, _, _ = line.strip().split(",")
+                total += float(amount)
+        print(f"\nTotal Expense: {total}")
+    except FileNotFoundError:
+        print("No expenses found.")
 
 # ---------- Main Menu ----------
 print("\nExpense Tracker")
