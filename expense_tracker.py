@@ -1,5 +1,5 @@
 """
-Expense Tracker - Day 1
+Expense Tracker 
 
 Features:
 - Add a new expense
@@ -44,15 +44,24 @@ def total_expense():
         print("No expenses found.")
 
 # ---------- Main Menu ----------
-print("\nExpense Tracker")
-print("1. Add Expense")
-print("2. View Expenses")
+while True:
+    print("\nExpense Tracker")
+    print("1. Add Expense")
+    print("2. View Expenses")
+    print("3. Total Expense")
+    print("4. Exit")
 
-choice = input("Enter your choice: ")
+    choice = input("Enter choice: ")
 
-if choice == "1":
-    add_expense()
-elif choice == "2":
-    view_expenses()
-else:
-    print("Invalid choice")
+    if choice == "1":
+        add_expense()
+    elif choice == "2":
+        view_expenses()
+    elif choice == "3":
+        total_expense()
+    elif choice == "4":
+        print("Exiting Expense Tracker")
+        break
+    else:
+        print("Invalid choice")
+
