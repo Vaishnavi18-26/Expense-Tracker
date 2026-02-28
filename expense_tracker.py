@@ -42,14 +42,29 @@ def total_expense():
         print(f"\nTotal Expense: {total}")
     except FileNotFoundError:
         print("No expenses found.")
+def category_total():
+    category_input = input("Enter category: ")
+    total = 0
 
+    try:
+        with open("expenses.txt", "r") as file:
+            for line in file:
+                amount, category, _ = line.strip().split(",")
+                if category.lower() == category_input.lower():
+                    total += float(amount)
+
+        print(f"Total expense for {category_input}: {total}")
+
+    except FileNotFoundError:
+        print("No expenses found.")
 # ---------- Main Menu ----------
 while True:
     print("\nExpense Tracker")
     print("1. Add Expense")
     print("2. View Expenses")
     print("3. Total Expense")
-    print("4. Exit")
+    print("4. Category Total")
+    print("5. Exit")
 
     choice = input("Enter choice: ")
 
@@ -60,8 +75,7 @@ while True:
     elif choice == "3":
         total_expense()
     elif choice == "4":
-        print("Exiting Expense Tracker")
-        break
-    else:
-        print("Invalid choice")
-
+    category_total()
+    elif choice == "5":
+    print("Exiting Expense Tracker")
+    break
