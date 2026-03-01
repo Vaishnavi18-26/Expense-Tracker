@@ -57,6 +57,20 @@ def category_total():
 
     except FileNotFoundError:
         print("No expenses found.")
+  def add_expense():
+    try:
+        amount = float(input("Enter amount: "))
+    except ValueError:
+        print("Invalid amount. Please enter a number.")
+        return
+
+    category = input("Enter category: ")
+    note = input("Enter note: ")
+
+    with open("expenses.txt", "a") as file:
+        file.write(f"{amount},{category},{note}\n")
+
+    print("Expense added successfully!")      
 # ---------- Main Menu ----------
 while True:
     print("\nExpense Tracker")
