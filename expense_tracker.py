@@ -8,7 +8,10 @@ Features:
 Each expense is saved as:
 amount,category,note
 """
+import os
 
+if not os.path.exists("expenses.txt"):
+    open("expenses.txt", "w").close()
 def add_expense():
     amount = float(input("Enter amount: "))
     category = input("Enter category (Food, Travel, etc): ")
