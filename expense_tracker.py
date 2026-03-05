@@ -26,13 +26,17 @@ def add_expense():
 # Program starts here
 # ---------- Day 2 Feature ----------
 def view_expenses():
-    print("\n--- All Expenses ---")
+     print("\n----- Expense List -----")
 
     try:
         with open("expenses.txt", "r") as file:
+            print("Amount | Category | Note")
+            print("------------------------")
+
             for line in file:
                 amount, category, note = line.strip().split(",")
-                print(f"Amount: {amount}, Category: {category}, Note: {note}")
+                print(f"{amount} | {category} | {note}")
+
     except FileNotFoundError:
         print("No expenses found.")
 def total_expense():
