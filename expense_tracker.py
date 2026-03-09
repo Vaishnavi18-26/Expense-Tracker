@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 
 # create file if it does not exist
@@ -24,7 +25,7 @@ def add_expense():
 
     category = input("Enter category: ")
     note = input("Enter note: ")
-
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     with open("expenses.txt", "a") as file:
         file.write(f"{amount},{category},{note}\n")
 
@@ -41,6 +42,7 @@ def view_expenses():
 
             for line in file:
                 amount, category, note = line.strip().split(",")
+                timestamp, amount, category, note = line.strip().split(",")
                 print(f"{amount} | {category} | {note}")
 
     except FileNotFoundError:
