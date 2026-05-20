@@ -1,5 +1,8 @@
+from flask import Flask
 from datetime import datetime
 import os
+
+app = Flask(__name__)
 
 # create file if it does not exist
 if not os.path.exists("expenses.txt"):
@@ -26,8 +29,9 @@ def add_expense():
     category = input("Enter category: ")
     note = input("Enter note: ")
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+
     with open("expenses.txt", "a") as file:
-        file.write(f"{amount},{category},{note}\n")
+        file.write(f"{timestamp},{amount},{category},{note}\n")
 
     print("Expense added successfully!")
 
@@ -37,13 +41,12 @@ def view_expenses():
 
     try:
         with open("expenses.txt", "r") as file:
-            print("Amount | Category | Note")
-            print("------------------------")
+            print("Time | Amount | Category | Note")
+            print("----------------------------------")
 
             for line in file:
-                amount, category, note = line.strip().split(",")
                 timestamp, amount, category, note = line.strip().split(",")
-                print(f"{amount} | {category} | {note}")
+                print(f"{timestamp} | {amount} | {category} | {note}")
 
     except FileNotFoundError:
         print("No expenses found.")
@@ -55,7 +58,7 @@ def total_expense():
     try:
         with open("expenses.txt", "r") as file:
             for line in file:
-                amount, _, _ = line.strip().split(",")
+                _, amount, _, _ = line.strip().split(",")
                 total += float(amount)
 
         print("Total Expense:", total)
@@ -71,7 +74,7 @@ def category_total():
     try:
         with open("expenses.txt", "r") as file:
             for line in file:
-                amount, category, _ = line.strip().split(",")
+                _, amount, category, _ = line.strip().split(",")
 
                 if category.lower() == category_input.lower():
                     total += float(amount)
@@ -92,30 +95,38 @@ def clear_expenses():
         print("Operation cancelled.")
 
 
-# -------- Main Menu --------
-while True:
+# -------- Flask Route --------
+@app.route('/')
+def home():
+    return "<h1>Expense Tracker Running 🚀</h1>"
 
-    print_menu()
-    choice = input("Enter choice: ")
 
-    if choice == "1":
-        add_expense()
+# -------- Main Menu (CLI still works) --------
+if __name__ == '__main__':
+    app.run(debug=True)
 
-    elif choice == "2":
-        view_expenses()
+    while True:
+        print_menu()
+        choice = input("Enter choice: ")
 
-    elif choice == "3":
-        total_expense()
+        if choice == "1":
+            add_expense()
 
-    elif choice == "4":
-        category_total()
+        elif choice == "2":
+            view_expenses()
 
-    elif choice == "5":
-        clear_expenses()
+        elif choice == "3":
+            total_expense()
 
-    elif choice == "6":
-        print("Exiting Expense Tracker")
-        break
+        elif choice == "4":
+            category_total()
 
-    else:
-        print("Invalid choice")
+        elif choice == "5":
+            clear_expenses()
+
+        elif choice == "6":
+            print("Exiting Expense Tracker")
+            break
+
+        else:
+            print("Invalid choice")
