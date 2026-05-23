@@ -1,132 +1,105 @@
-from flask import Flask
+from flask import Flask, render_template, request
 from datetime import datetime
 import os
 
 app = Flask(__name__)
 
-# create file if it does not exist
+# create file if not exists
 if not os.path.exists("expenses.txt"):
     open("expenses.txt", "w").close()
 
 
-def print_menu():
-    print("\nExpense Tracker")
-    print("1. Add Expense")
-    print("2. View Expenses")
-    print("3. Total Expense")
-    print("4. Category Total")
-    print("5. Clear All Expenses")
-    print("6. Exit")
+# 🟢 HOME
+@app.route('/')
+def home():
+    return render_template("index.html")
 
 
-def add_expense():
-    try:
-        amount = float(input("Enter amount: "))
-    except ValueError:
-        print("Invalid amount. Please enter a number.")
-        return
+# 🟢 ADD EXPENSE
+@app.route('/add', methods=['POST'])
+def add():
+    amount = request.form['amount']
+    category = request.form['category']
+    note = request.form['note']
 
-    category = input("Enter category: ")
-    note = input("Enter note: ")
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     with open("expenses.txt", "a") as file:
         file.write(f"{timestamp},{amount},{category},{note}\n")
 
-    print("Expense added successfully!")
+    return "<h3>✅ Expense Added!</h3><a href='/'>Add More</a> | <a href='/view'>View Expenses</a>"
 
 
-def view_expenses():
-    print("\n----- Expense List -----")
+# 🟢 VIEW ALL EXPENSES
+@app.route('/view')
+def view():
+    expenses = []
 
     try:
         with open("expenses.txt", "r") as file:
-            print("Time | Amount | Category | Note")
-            print("----------------------------------")
-
             for line in file:
                 timestamp, amount, category, note = line.strip().split(",")
-                print(f"{timestamp} | {amount} | {category} | {note}")
+                expenses.append({
+                    "timestamp": timestamp,
+                    "amount": amount,
+                    "category": category,
+                    "note": note
+                })
+    except:
+        pass
 
-    except FileNotFoundError:
-        print("No expenses found.")
+    return render_template("view.html", expenses=expenses)
 
 
-def total_expense():
-    total = 0
+# 🟢 TOTAL EXPENSE
+@app.route('/total')
+def total():
+    total_amount = 0
 
     try:
         with open("expenses.txt", "r") as file:
             for line in file:
                 _, amount, _, _ = line.strip().split(",")
-                total += float(amount)
+                total_amount += float(amount)
+    except:
+        pass
 
-        print("Total Expense:", total)
-
-    except FileNotFoundError:
-        print("No expenses found.")
-
-
-def category_total():
-    category_input = input("Enter category: ")
-    total = 0
-
-    try:
-        with open("expenses.txt", "r") as file:
-            for line in file:
-                _, amount, category, _ = line.strip().split(",")
-
-                if category.lower() == category_input.lower():
-                    total += float(amount)
-
-        print(f"Total expense for {category_input}: {total}")
-
-    except FileNotFoundError:
-        print("No expenses found.")
+    return f"<h2>Total Expense: {total_amount}</h2><a href='/'>Go Back</a>"
 
 
-def clear_expenses():
-    confirm = input("Are you sure you want to delete all expenses? (yes/no): ")
+# 🟢 CATEGORY FILTER
+@app.route('/category', methods=['GET', 'POST'])
+def category():
+    expenses = []
 
-    if confirm.lower() == "yes":
-        open("expenses.txt", "w").close()
-        print("All expenses cleared.")
-    else:
-        print("Operation cancelled.")
+    if request.method == 'POST':
+        selected_category = request.form['category']
+
+        try:
+            with open("expenses.txt", "r") as file:
+                for line in file:
+                    timestamp, amount, category, note = line.strip().split(",")
+
+                    if category.lower() == selected_category.lower():
+                        expenses.append({
+                            "timestamp": timestamp,
+                            "amount": amount,
+                            "category": category,
+                            "note": note
+                        })
+        except:
+            pass
+
+    return render_template("category.html", expenses=expenses)
 
 
-# -------- Flask Route --------
-@app.route('/')
-def home():
-    return "<h1>Expense Tracker Running 🚀</h1>"
+# 🟢 CLEAR ALL
+@app.route('/clear')
+def clear():
+    open("expenses.txt", "w").close()
+    return "<h3>All expenses cleared ❌</h3><a href='/'>Go Back</a>"
 
 
-# -------- Main Menu (CLI still works) --------
+# 🟢 RUN APP
 if __name__ == '__main__':
     app.run(debug=True)
-
-    while True:
-        print_menu()
-        choice = input("Enter choice: ")
-
-        if choice == "1":
-            add_expense()
-
-        elif choice == "2":
-            view_expenses()
-
-        elif choice == "3":
-            total_expense()
-
-        elif choice == "4":
-            category_total()
-
-        elif choice == "5":
-            clear_expenses()
-
-        elif choice == "6":
-            print("Exiting Expense Tracker")
-            break
-
-        else:
-            print("Invalid choice")
