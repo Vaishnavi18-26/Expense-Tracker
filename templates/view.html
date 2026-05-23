@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Expenses</title>
+</head>
+<body>
+
+<h1>All Expenses</h1>
+
+<table border="1">
+    <tr>
+        <th>Time</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Note</th>
+    </tr>
+
+    {% for exp in expenses %}
+    <tr>
+        <td>{{ exp.timestamp }}</td>
+        <td>{{ exp.amount }}</td>
+        <td>{{ exp.category }}</td>
+        <td>{{ exp.note }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<br>
+<a href="/">Go Back</a>
+
+</body>
+</html>
