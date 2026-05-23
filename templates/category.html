@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Filter by Category</title>
+</head>
+<body>
+
+<h1>Filter Expenses</h1>
+
+<form method="POST">
+    Enter Category: <input type="text" name="category" required>
+    <button type="submit">Search</button>
+</form>
+
+<br>
+
+<table border="1">
+    <tr>
+        <th>Time</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Note</th>
+    </tr>
+
+    {% for exp in expenses %}
+    <tr>
+        <td>{{ exp.timestamp }}</td>
+        <td>{{ exp.amount }}</td>
+        <td>{{ exp.category }}</td>
+        <td>{{ exp.note }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<br>
+<a href="/">Go Back</a>
+
+</body>
+</html>
